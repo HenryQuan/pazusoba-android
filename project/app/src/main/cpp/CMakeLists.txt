@@ -32,7 +32,7 @@ file(GLOB_RECURSE PAZUSOBA_SOURCES "pazusoba/src/*.cpp")
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-add_compile_options(-g)
+add_compile_options(-O3)
 add_library(
     pazusoba_android
     SHARED

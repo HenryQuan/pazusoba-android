@@ -7,22 +7,36 @@ cmake_minimum_required(VERSION 3.10.2)
 
 # Declares and names the project.
 
-project("pazusoba_android")
-add_subdirectory(pazusoba EXCLUDE_FROM_ALL)
+project(
+    pazusoba_android
+    LANGUAGES CXX
+)
+
+# include pazusoba
+add_subdirectory(pazusoba)
+
+# pthread is required for multithreading
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+link_libraries(Threads::Threads)
+
+# include all headers
+link_libraries(fmt::fmt-header-only)
+include_directories(pazusoba/include)
+
+# all source files
+file(GLOB_RECURSE PAZUSOBA_SOURCES "pazusoba/src/*.cpp")
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-add_library( # Sets the name of the library.
-        pazusoba_android
-
-        # Sets the library as a shared library.
-        SHARED
-
-        # Provides a relative path to your source file(s).
-        native-lib.cpp)
+add_library(
+    pazusoba_android
+    SHARED
+    pazusoba_android.cpp ${PAZUSOBA_SOURCES}
+)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -30,20 +44,17 @@ add_library( # Sets the name of the library.
 # you want to add. CMake verifies that the library exists before
 # completing its build.
 
-find_library( # Sets the name of the path variable.
-        log-lib
-
-        # Specifies the name of the NDK library that
-        # you want CMake to locate.
-        log)
+find_library(
+    extra-libs
+    # add other libraries from NDK
+    log
+)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-target_link_libraries( # Specifies the target library.
-        pazusoba_android
-
-        # Links the target library to the log library
-        # included in the NDK.
-        ${log-lib})
+target_link_libraries(
+    pazusoba_android
+    ${extra-libs}
+)

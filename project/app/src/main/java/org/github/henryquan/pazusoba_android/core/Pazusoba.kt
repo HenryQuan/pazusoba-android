@@ -6,10 +6,10 @@ object Pazusoba {
         System.loadLibrary("pazusoba_android")
     }
 
-    external suspend fun solve(
+    external fun solve(
         board: String,
         minErase: Int = 3,
         maxStep: Int = 30,
         beamSize: Int = 2500
-    ): String
+    ): IntArray
 }

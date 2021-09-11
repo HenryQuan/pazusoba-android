@@ -16,17 +16,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+        binding.sampleText.text = stringFromJNI() + "\n" + helloworldFromJNI()
     }
 
     /**
-     * A native method that is implemented by the 'pazusoba_android' native library,
-     * which is packaged with this application.
+     * Native methods from the shared library
      */
-    external fun stringFromJNI(): String
+    private external fun stringFromJNI(): String
+    private external fun helloworldFromJNI(): String
 
     companion object {
-        // Used to load the 'pazusoba_android' library on application startup.
+        // Load the 'pazusoba_android' library on application startup
         init {
             System.loadLibrary("pazusoba_android")
         }

@@ -6,7 +6,7 @@ object Pazusoba {
         System.loadLibrary("pazusoba_android")
     }
 
-    external fun solve(
+    external suspend fun solve(
         board: String,
         minErase: Int = 3,
         maxStep: Int = 30,

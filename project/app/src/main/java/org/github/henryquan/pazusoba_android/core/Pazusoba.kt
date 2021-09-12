@@ -1,35 +1,21 @@
 package org.github.henryquan.pazusoba_android.core
 
-import android.util.Log
+class Pazusoba(var minErase: Int = 3, var maxStep: Int = 30, var beamSize: Int = 2500) {
 
-class Pazusoba(val minErase: Int = 3, val maxStep: Int = 30, val beamSize: Int = 2500) {
-
-    fun solve(board: String): String {
-        val start = System.currentTimeMillis()
-        val stepList = solve(board, minErase, maxStep, beamSize)
-        val size = stepList.count()
-        val column = getColumn(board.length)
-
-        var route = ""
-        for (step in stepList) {
-            val x = step / column
-            val y = step % column
-            route += "($x, $y) -> "
-        }
-        route += "END"
-
-        val end = System.currentTimeMillis() - start
-        route += "\nIt took $end ms\n$size step(s) in total\nBeam - $beamSize, Step - $maxStep"
-        return route
-    }
-
-    private fun getColumn(length: Int): Int {
-        return when (length) {
-            20 -> 5
-            30 -> 6
-            42 -> 7
-            else -> error("Unknown board size ${length}")
-        }
+    fun solve(board: String, callback: (String) -> Unit) {
+        Thread {
+            val start = System.currentTimeMillis()
+            val data = solve(board, minErase, maxStep, beamSize)
+            val route = Route(board, data)
+            if (route.valid) {
+                val end = System.currentTimeMillis() - start
+                var info =
+                    route.routeString + "\nIt took $end ms\n${route.steps} step(s) in total\nBeam - $beamSize, Step - $maxStep\n$board\n${route.combo} combo"
+                callback(info)
+            } else {
+                callback("")
+            }
+        }.start()
     }
 
     /**

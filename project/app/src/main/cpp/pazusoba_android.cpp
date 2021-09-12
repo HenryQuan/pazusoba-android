@@ -24,8 +24,11 @@ Java_org_github_henryquan_pazusoba_1android_core_Pazusoba_solve(
     parser.parse();
 
     auto solver = pazusoba::BeamSearch(parser);
-    auto route = solver.solve();
-    auto size = route.totalSteps();
+    auto state = solver.solve();
+    auto route = state.route();
+
+    // append combo at the end
+    auto size = route.totalSteps() + 1;
     auto stepList = env->NewIntArray(size);
     if (stepList == nullptr) {
         return nullptr;
@@ -33,9 +36,14 @@ Java_org_github_henryquan_pazusoba_1android_core_Pazusoba_solve(
 
     jint temp[size];
     auto routeList = route.list();
-    for (int i = 0; i < size; i++) {
-        temp[i] = routeList[i];
+    int index;
+    // exclude combo here
+    for (index = 0; index < size - 1; index++) {
+        temp[index] = routeList[index];
     }
+    // add combo in the end
+    temp[index] = state.combo();
+
     // fill temp data to return list
     env->SetIntArrayRegion(stepList, 0, size, temp);
     return stepList;

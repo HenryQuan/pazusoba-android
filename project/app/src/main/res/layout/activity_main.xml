@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxBackgroundMode="none"
+        app:layout_constraintBottom_toTopOf="@+id/stepSlider">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/boardInputField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/beamSizeSlider"
         android:layout_width="match_parent"
@@ -35,8 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="pazusoba"
         android:onClick="solve"
+        android:text="pazusoba"
         app:layout_constraintTop_toBottomOf="@+id/sample_text"
         tools:layout_editor_absoluteX="0dp" />
 

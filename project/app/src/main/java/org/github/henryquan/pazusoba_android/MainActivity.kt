@@ -1,11 +1,12 @@
 package org.github.henryquan.pazusoba_android
 
 import android.os.Bundle
-import android.util.Log
+import android.view.KeyEvent
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.coroutineScope
 import org.github.henryquan.pazusoba_android.core.Pazusoba
 import org.github.henryquan.pazusoba_android.databinding.ActivityMainBinding
+import org.github.henryquan.pazusoba_android.extensions.hideKeyboard
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,16 +19,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        solveBoard()
+        binding.apply {
+            boardInputField.setText(
+                "GDHRGRGRBDHLHRBDGGHLLBBDHGGLBB",
+                TextView.BufferType.EDITABLE
+            )
+
+            // 30 steps
+            stepSlider.values = mutableListOf(0.6.toFloat())
+            // 1000 beam
+            beamSizeSlider.values = mutableListOf(0.1.toFloat())
+        }
+
+        // Click anywhere to dismiss the keyboard
+        binding.root.setOnClickListener {
+            it.hideKeyboard()
+        }
     }
 
     fun solve(view: android.view.View) {
         val stepValue = binding.stepSlider.values.first()
         val beamValue = binding.beamSizeSlider.values.first()
 
-        val maxStep = (50 * stepValue).toInt()
-        val beamSize = (beamValue * 10000).toInt()
-        solver = Pazusoba(3, maxStep, beamSize)
+        solver.beamSize = (beamValue * 10000).toInt()
+        solver.maxStep = (50 * stepValue).toInt()
         solveBoard()
     }
 
@@ -36,11 +51,11 @@ class MainActivity : AppCompatActivity() {
      */
     private fun solveBoard() {
         binding.sampleText.text = "Solving..."
-        Thread {
-            val routeString = solver.solve("GDHRGRGRBDHLHRBDGGHLLBBDHGGLBB")
+        val board = binding.boardInputField.text.toString()
+        solver.solve(board) { route ->
             runOnUiThread {
-                binding.sampleText.text = routeString
+                binding.sampleText.text = route
             }
-        }.start()
+        }
     }
 }
